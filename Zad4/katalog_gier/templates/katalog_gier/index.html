@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog Gier - API Fetch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 20px;
+            background-color: #f4f4f9;
+        }
+        h1 { color: #333; }
+        .controls {
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover { background-color: #0056b3; }
+        select { padding: 10px; font-size: 16px; }
+        #status-message {
+            font-weight: bold;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .info { background-color: #e2e3e5; color: #383d41; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .hidden { display: none; }
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .game-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #007bff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .game-card h3 { margin-top: 0; color: #222; }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: white;
+        }
+        .badge-success { background-color: #28a745; }
+        .badge-danger { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <h1>Katalog Gier Komputerowych</h1>
+    <p>Projekt laboratoryjny: Pobieranie danych z Django API przy użyciu <code>fetch()</code>.</p>
+
+    <!-- Kontrolki interfejsu (Przycisk i Filtr) -->
+    <div class="controls">
+        <label for="filter-select">Filtruj dostępność:</label>
+        <select id="filter-select">
+            <option value="all">Wszystkie gry</option>
+            <option value="true">Tylko dostępne</option>
+            <option value="false">Tylko niedostępne</option>
+        </select>
+        <button id="btn-load">Wczytaj dane</button>
+    </div>
+
+    <!-- Miejsca na statusy i błędy -->
+    <div id="status-message" class="hidden"></div>
+
+    <!-- Kontener na wyświetlane rekordy -->
+    <div id="games-container" class="games-grid"></div>
+
+    <script>
+        const btnLoad = document.getElementById('btn-load');
+        const filterSelect = document.getElementById('filter-select');
+        const statusMsg = document.getElementById('status-message');
+        const gamesContainer = document.getElementById('games-container');
+
+        function showMessage(text, isError = false) {
+            statusMsg.textContent = text;
+            statusMsg.className = isError ? 'error' : 'info';
+            statusMsg.classList.remove('hidden');
+        }
+
+        function clearMessage() {
+            statusMsg.textContent = '';
+            statusMsg.className = 'hidden';
+        }
+
+        async function fetchGames() {
+            // Czyszczenie poprzednich wyników i ustawienie stanu ładowania
+            gamesContainer.innerHTML = '';
+            showMessage('Trwa pobieranie danych z serwera...');
+
+            // Przygotowanie adresu URL z parametrem filtra
+            let url = '/api/gry/';
+            const selectedFilter = filterSelect.value;
+            if (selectedFilter !== 'all') {
+                url += `?dostepna=${selectedFilter}`;
+            }
+
+            try {
+                // Krok 1: Wywołanie fetch()
+                const response = await fetch(url);
+
+                // Krok 2: Sprawdzenie response.ok
+                if (!response.ok) {
+                    throw new Error(`Błąd serwera: ${response.status} ${response.statusText}`);
+                }
+
+                // Krok 3: Odczyt JSON
+                const data = await response.json();
+                clearMessage();
+
+                // Krok 4: Obsługa pustej listy
+                if (!data.items || data.items.length === 0) {
+                    showMessage('Brak gier spełniających wybrane kryteria.');
+                    return;
+                }
+
+                // Krok 5: Aktualizacja DOM z zachowaniem bezpiecznego textContent
+                data.items.forEach(game => {
+                    const card = document.createElement('div');
+                    card.className = 'game-card';
+
+                    const title = document.createElement('h3');
+                    title.textContent = game.tytul;
+
+                    const genre = document.createElement('p');
+                    genre.textContent = `Gatunek: ${game.gatunek} | Rok: ${game.rok_wydania}`;
+
+                    const desc = document.createElement('p');
+                    desc.textContent = game.opis;
+
+                    const statusBadge = document.createElement('span');
+                    statusBadge.className = game.dostepna ? 'badge badge-success' : 'badge badge-danger';
+                    statusBadge.textContent = game.dostepna ? 'Dostępna' : 'Niedostępna';
+
+                    card.appendChild(title);
+                    card.appendChild(genre);
+                    card.appendChild(desc);
+                    card.appendChild(statusBadge);
+
+                    gamesContainer.appendChild(card);
+                });
+
+            } catch (error) {
+                // Obsługa błędu połączenia lub serwera
+                showMessage(`Wystąpił błąd podczas pobierania danych: ${error.message}`, true);
+            }
+        }
+
+        // Podpięcie zdarzenia kliknięcia przycisku
+        btnLoad.addEventListener('click', fetchGames);
+    </script>
+</body>
+</html>
