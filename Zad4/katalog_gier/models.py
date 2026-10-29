@@ -7,5 +7,10 @@ class Gra(models.Model):
     opis = models.TextField(verbose_name="Opis gry")
     rok_wydania = models.IntegerField(verbose_name="Rok wydania")
     dostepna = models.BooleanField(default=True, verbose_name="Dostępna w sklepie")
+
+    class Meta:
+        verbose_name = "Gra"
+        verbose_name_plural = "Gry"
+        
     def __str__(self):
         return f"{self.tytul} ({self.rok_wydania})"

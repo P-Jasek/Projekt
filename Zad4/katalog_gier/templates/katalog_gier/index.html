@@ -72,7 +72,7 @@
     <h1>Katalog Gier Komputerowych</h1>
     <p>Projekt laboratoryjny: Pobieranie danych z Django API przy użyciu <code>fetch()</code>.</p>
 
-    <!-- Kontrolki interfejsu (Przycisk i Filtr) -->
+  
     <div class="controls">
         <label for="filter-select">Filtruj dostępność:</label>
         <select id="filter-select">
@@ -83,10 +83,10 @@
         <button id="btn-load">Wczytaj dane</button>
     </div>
 
-    <!-- Miejsca na statusy i błędy -->
+  
     <div id="status-message" class="hidden"></div>
 
-    <!-- Kontener na wyświetlane rekordy -->
+  
     <div id="games-container" class="games-grid"></div>
 
     <script>
@@ -107,11 +107,11 @@
         }
 
         async function fetchGames() {
-            // Czyszczenie poprzednich wyników i ustawienie stanu ładowania
+           
             gamesContainer.innerHTML = '';
             showMessage('Trwa pobieranie danych z serwera...');
 
-            // Przygotowanie adresu URL z parametrem filtra
+           
             let url = '/api/gry/';
             const selectedFilter = filterSelect.value;
             if (selectedFilter !== 'all') {
@@ -119,25 +119,25 @@
             }
 
             try {
-                // Krok 1: Wywołanie fetch()
+               
                 const response = await fetch(url);
 
-                // Krok 2: Sprawdzenie response.ok
+               
                 if (!response.ok) {
                     throw new Error(`Błąd serwera: ${response.status} ${response.statusText}`);
                 }
 
-                // Krok 3: Odczyt JSON
+             
                 const data = await response.json();
                 clearMessage();
 
-                // Krok 4: Obsługa pustej listy
+          
                 if (!data.items || data.items.length === 0) {
                     showMessage('Brak gier spełniających wybrane kryteria.');
                     return;
                 }
 
-                // Krok 5: Aktualizacja DOM z zachowaniem bezpiecznego textContent
+            
                 data.items.forEach(game => {
                     const card = document.createElement('div');
                     card.className = 'game-card';
@@ -164,12 +164,12 @@
                 });
 
             } catch (error) {
-                // Obsługa błędu połączenia lub serwera
+               
                 showMessage(`Wystąpił błąd podczas pobierania danych: ${error.message}`, true);
             }
         }
 
-        // Podpięcie zdarzenia kliknięcia przycisku
+    
         btnLoad.addEventListener('click', fetchGames);
     </script>
 </body>
