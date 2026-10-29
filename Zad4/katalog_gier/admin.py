@@ -1,3 +1,8 @@
 from django.contrib import admin
+from .models import Gra
 
-# Register your models here.
+@admin.register(Gra)
+class GraAdmin(admin.ModelAdmin):
+    list_display = ('tytul', 'gatunek', 'rok_wydania', 'dostepna')
+    list_filter = ('dostepna', 'gatunek')
+    search_fields = ('tytul',)
