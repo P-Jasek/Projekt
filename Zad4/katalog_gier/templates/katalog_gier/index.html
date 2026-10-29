@@ -155,10 +155,6 @@
                     statusBadge.className = game.dostepna ? 'badge badge-success' : 'badge badge-danger';
                     statusBadge.textContent = game.dostepna ? 'Dostępna' : 'Niedostępna';
 
-                    const price = document.createElement('p');
-                    price.textContent = `Cena: ${game.cena} PLN`;
-                    
-                    card.appendChild(price);
                     card.appendChild(title);
                     card.appendChild(genre);
                     card.appendChild(desc);

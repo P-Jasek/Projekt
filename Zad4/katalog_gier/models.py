@@ -7,7 +7,6 @@ class Gra(models.Model):
     opis = models.TextField(verbose_name="Opis gry")
     rok_wydania = models.IntegerField(verbose_name="Rok wydania")
     dostepna = models.BooleanField(default=True, verbose_name="Dostępna w sklepie")
-    cena = models.DecimalField(max_digits=6, decimal_places=2, default=0.00, verbose_name="Cena (PLN)")
 
     class Meta:
         verbose_name = "Gra"

@@ -27,7 +27,6 @@ def api_gry_list(request):
             'opis': g.opis,
             'rok_wydania': g.rok_wydania,
             'dostepna': g.dostepna,
-            'cena' : str(g.cena)
         })
 
     return JsonResponse({'items': data})
