@@ -4,7 +4,7 @@ from .models import Gra
 
 
 def index(request):
-    return render(request, 'katalog_gier/index.html')
+    return render(request, 'Katalog/index.html')
 
 
 def api_gry_list(request):
