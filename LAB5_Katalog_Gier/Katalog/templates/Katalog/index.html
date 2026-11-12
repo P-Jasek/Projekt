@@ -145,8 +145,11 @@
                     const title = document.createElement('h3');
                     title.textContent = game.tytul;
 
-                    const genre = document.createElement('p');
-                    genre.textContent = `Gatunek: ${game.gatunek} | Rok: ${game.rok_wydania}`;
+                    const genreAndPublisher = document.createElement('p');
+                    genre.textContent = `Gatunek: ${game.gatunek} | Rok: ${game.rok_wydania}; | Wydawca: ${game.wydawca}`;
+
+                    const rating = document.createElement('p');
+                    rating.textContent = game.ocena ? `Ocena: ${game.ocena} / 10` : `Ocena: Brak oceny`;
 
                     const desc = document.createElement('p');
                     desc.textContent = game.opis;
@@ -156,7 +159,8 @@
                     statusBadge.textContent = game.dostepna ? 'Dostępna' : 'Niedostępna';
 
                     card.appendChild(title);
-                    card.appendChild(genre);
+                    card.appendChild(genreAndPublisher);
+                    card.appendChild(rating);
                     card.appendChild(desc);
                     card.appendChild(statusBadge);
 
